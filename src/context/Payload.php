@@ -25,7 +25,7 @@ class Payload extends Base {
 		$t = array() ;
 		if (isset($this->params['display_type'])) {
 			$t['display_type'] = $this->params['display_type'] ;
-			unset($this->params['display_type']) ;
+	//		unset($this->params['display_type']) ;
 		}
 		
 		if (isset($this->params['extra'])) {
