@@ -10,7 +10,7 @@
  *
  * @author 	   yuhari
  * @maintainer yuhari
- * @version    1.0.0
+ * @version    2.0.0
  * @modified   2020/03/25 13:59:12
  *
  */
@@ -62,12 +62,12 @@ class UPush {
 			if (!empty($scene['link'])) {
 				$link = $scene['link'] ;
 			} else {
-				$link = sprintf("%s?%s", $scene['tag'], http_build_query($scene['args'])) ;
+				$link = sprintf("%s?%s", $scene['path'], http_build_query($scene['args'])) ;
 			}
 			
 			$behavior = array(
 				'method' 	=> 'go_custom' ,
-				'link'		=> array('link' => sprintf("gwdang://app.gwdang.com/%s", $link)) ,
+				'link'		=> array('link' => $link) ,
 			) ;
 			$this->context->getModulePayload()->setOpenBehavior($behavior) ;
 		}
@@ -101,10 +101,16 @@ class UPush {
 		return $this ;
 	}
 	
+	// 修正小米推送，友盟
+	public function amendMiPushActivity($activity) {
+		$this->context->setAttribute('mipush', "true") ;
+		$this->context->setAttribute('mi_activity', $activity) ;
+		
+		return $this ;
+	}
+	
 	// 发送
 	public function send() {
-		$this->context->setAttribute('mipush', "true") ;
-		$this->context->setAttribute('mi_activity', "com.gwdang.app.push.GWDPushActivity") ;
 		
 		return $this->context->send() ;
 	}
