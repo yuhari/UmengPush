@@ -23,7 +23,7 @@ class Context {
 	
 	protected $app_secret ;
 	
-	protected $api = 'https://msgapi.umeng.com/api/send' ;
+	protected $api = 'https://msgapi.umeng.com/api/' ;
 	
 	protected $params = array() ;
 	
@@ -95,6 +95,25 @@ class Context {
 		return $this ;
 	}
 	
+	// get status
+	public function status() {
+		$args = $this->params ;
+		$args['appkey']  = $this->app_id ;
+		$args['timestamp'] = time() . '';
+		
+		return $this->request($args, $this->api . 'status') ;
+	}
+	
+	// cancel task
+	public function cancel() {
+		$args = $this->params ;
+		$args['appkey']  = $this->app_id ;
+		$args['timestamp'] = time() . '';
+		
+		return $this->request($args, $this->api . 'cancel') ;
+	}
+	
+	// send task
 	public function send() {
 		$args = $this->params ;
 		$args['payload'] = $this->getModulePayload()->getParams() ;
@@ -102,8 +121,13 @@ class Context {
 		$args['appkey']  = $this->app_id ;
 		$args['timestamp'] = time() . '';
 		
+		return $this->request($args, $this->api . 'send') ;
+ 	}
+	
+	// request
+	protected function request($args, $api) {
 		$method = 'POST' ;
-		$url	= $this->api ;
+		$url	= $api ;
 		$body	= json_encode($args, JSON_FORCE_OBJECT) ;
 		$secret = $this->app_secret ;
 
@@ -116,7 +140,7 @@ class Context {
 		}
 		
 		return null ;
- 	}
+	}
 	
 	protected function curl($url, $params = array(), $type = 'GET') {
 		try {

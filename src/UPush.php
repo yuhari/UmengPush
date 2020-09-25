@@ -109,9 +109,25 @@ class UPush {
 		return $this ;
 	}
 	
+	// 设置任务id
+	public function setTaskId($task_id) {
+		$this->context->setAttribute('task_id', $task_id) ;
+		
+		return $this ;
+	}
+	
 	// 发送
 	public function send() {
-		
 		return $this->context->send() ;
+	}
+	
+	// 取消任务
+	public function cancel() {
+		return $this->context->cancel() ;
+	}
+	
+	// 任务状态
+	public function status() {
+		return $this->context->status() ;
 	}
 }
