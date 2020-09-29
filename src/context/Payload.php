@@ -21,20 +21,38 @@ class Payload extends Base {
 		'display_type' => 'notification' ,
 	) ;
 	
-	public function getParams() {
+	public function getParams($platform = 'android') {
 		$t = array() ;
-		if (isset($this->params['display_type'])) {
-			$t['display_type'] = $this->params['display_type'] ;
-	//		unset($this->params['display_type']) ;
+		
+		if ($platform == 'ios') {
+			// ios
+			$t['aps'] = [
+				'alert' => [
+					'title' => $this->params['title'] ,
+					'subtitle' => @(string)$this->params['subtitle'] .'' ,
+					'body'	=> $this->params['text'] ,
+				] ,
+				'content-available' => 1 ,
+			] ;
+			
+			if (!empty($this->params['extra'])) {
+				$t = array_merge($t, $this->params['extra']) ;
+			}
+		} else {
+			// android
+			if (isset($this->params['display_type'])) {
+				$t['display_type'] = $this->params['display_type'] ;
+				unset($this->params['display_type']) ;
+			}
+			
+			if (isset($this->params['extra'])) {
+				$t['extra'] = $this->params['extra'] ;
+				unset($this->params['extra']) ;
+			}
+		
+			$t['body'] = $this->params ;
 		}
-		
-		if (isset($this->params['extra'])) {
-			$t['extra'] = $this->params['extra'] ;
-			unset($this->params['extra']) ;
-		}
-		
-		$t['body'] = $this->params ;
-		
+				
 		return $t ;
 	}
 	

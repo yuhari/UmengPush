@@ -31,11 +31,13 @@ class Context {
 	
 	protected $policy ;
 	
-	public function __construct($app_id, $app_secret) {
+	protected $platform ;
+	
+	public function __construct($app_id, $app_secret, $platform = 'android') {
 		
 		$this->app_id = $app_id ;
 		$this->app_secret = $app_secret ;
-		
+		$this->platform = $platform ;
 	}
 	
 	// 设置测试模式
@@ -116,13 +118,21 @@ class Context {
 	// send task
 	public function send() {
 		$args = $this->params ;
-		$args['payload'] = $this->getModulePayload()->getParams() ;
-		$args['policy']  = $this->getModulePolicy()->getParams() ;
+		$args['payload'] = $this->getModulePayload()->getParams($this->platform) ;
+		$args['policy']  = $this->getModulePolicy()->getParams($this->platform) ;
 		$args['appkey']  = $this->app_id ;
 		$args['timestamp'] = time() . '';
 		
 		return $this->request($args, $this->api . 'send') ;
  	}
+	
+	public function clearState() {
+		$this->params = array() ;
+		$this->payload = null ;
+		$this->policy = null ;
+		
+		return $this ;
+	}
 	
 	// request
 	protected function request($args, $api) {

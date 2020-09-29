@@ -24,7 +24,7 @@ abstract class Base {
 		return $this ;
 	}
 	
-	public function getParams() {
+	public function getParams($platform = 'android') {
 		return $this->params ;
 	}
 }

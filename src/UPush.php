@@ -19,9 +19,9 @@ namespace UPush ;
 class UPush {
 	
 	protected $context ;
-	
-	public function __construct($appid, $appkey) {
-		$this->context = new Context($appid, $appkey) ;
+		
+	public function __construct($appid, $appkey, $platform = 'android') {
+		$this->context = new Context($appid, $appkey, $platform) ;
 	}
 	
 	// 指定用户
@@ -61,8 +61,13 @@ class UPush {
 			$link = 'default' ;
 			if (!empty($scene['link'])) {
 				$link = $scene['link'] ;
-			} else {
+				unset($scene['link']) ;
+			} elseif (!empty($scene['tag'])) {
 				$link = sprintf("%s?%s", $scene['path'], http_build_query($scene['args'])) ;
+			}
+			
+			if (!empty($scene)) {
+				$this->context->getModulePayload()->setExtraArgs($scene) ;
 			}
 			
 			$behavior = array(
@@ -95,6 +100,12 @@ class UPush {
 		return $this ;
 	}
 	
+	public function setDebugMode() {
+		$this->context->setDebugMode(false) ;
+		
+		return $this ;
+	}
+	
 	public function setProductionMode() {
 		$this->context->setDebugMode(true) ;
 		
@@ -118,7 +129,10 @@ class UPush {
 	
 	// 发送
 	public function send() {
-		return $this->context->send() ;
+		$r = $this->context->send() ;
+		$this->context->clearState() ;
+		
+		return $r ;
 	}
 	
 	// 取消任务
